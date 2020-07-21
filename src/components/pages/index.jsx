@@ -59,12 +59,14 @@ class Index extends React.Component {
       tableData: [],
       pageNo: 0,
       TotalPage: 0,
-      Hiddenrow:''
+      Hiddenrow:'',
+      completeData:[]
     };
 
    this.hideHandler=this.hideHandler.bind(this);
    this.showHandler=this.hideHandler.bind(this);
    this.renderNews=this.renderNews.bind(this);
+   this.updateUpVote= this.updateUpVote.bind(this);
   }
 
   DataHandler(pageNumber) {
@@ -77,9 +79,11 @@ class Index extends React.Component {
         this.setState({
           tableData: response.data.hits,
           pageNo: pageNumber,
-          TotalPage: response.data.nbPages
+          TotalPage: response.data.nbPages,
+          completeData: response.data.hits
         });
         console.log("res: ", this.state.tableData);
+        console.log("res of completeData ", this.state.completeData);
       });
   }
 
@@ -88,7 +92,10 @@ class Index extends React.Component {
     //this.props.onReOrder(e.target.id, this.props.orderDir)
 } */
   
-
+  componentWillMount() {
+    
+    console.log("inside component will mount");
+  }
   componentDidMount() {
     this.DataHandler(0);
   }
@@ -132,6 +139,16 @@ RemoveDataFromLocalStorage=(dataval)=>
     })
 }
  //onClick={this.hideHandler(index)}
+ updateUpVote=(index) => {
+   console.log('index of upvote: & news points ',index);
+   console.log('tableData ',this.state.tableData);
+   let newValue = JSON.parse(JSON.stringify(this.state.tableData))
+    newValue[index].points += 1;
+   this.setState({
+     tableData : newValue
+   })   
+   }
+   
 
  hideHandler=(index)=> {
   console.log('index: ',index);
@@ -160,7 +177,7 @@ showHandlerNew=(indexval)=> {
         <td>{news.num_comments?news.num_comments:'0'}</td>
         <td>{news.points}</td>
         <td>
-          <a style={styles.UpvoteButton} href='#' >{<TiArrowSortedUp style={styles.UpvoteButton}/>/* <Button variant="primary btn-sm" style={styles.UpvoteButton}><TiArrowSortedUp/></Button> {" "} */}</a>
+          <a onClick = {()=>this.updateUpVote(index)} style={styles.UpvoteButton} href='#' >{<TiArrowSortedUp style={styles.UpvoteButton}/>/* <Button variant="primary btn-sm" style={styles.UpvoteButton}><TiArrowSortedUp/></Button> {" "} */}</a>
         </td>
         <td>
           {news.title}{" "}
@@ -210,7 +227,7 @@ showHandlerNew=(indexval)=> {
                 <tr style={styles.TableRow}>
                   <th>Comments</th>
                   <th>VoteCount</th>
-                  <th>UpVote</th>
+                  <th>UpVoteing</th>
                   <th>News Details</th>
                 </tr>
               </thead>

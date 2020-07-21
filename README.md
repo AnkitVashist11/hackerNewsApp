@@ -1,5 +1,5 @@
 # hackerNews
-HackerNews application
+HackerNews application SSR Implemented
 
 # *HackerNews Application* A React App with using a Express on Google Compute Engine
 
@@ -60,7 +60,7 @@ This deployment will automatically:
 ###### Features In Current Version:
 
 
-  1. Upvote ui is implemented. 
+  1. Upvote ui is implemented and real time updating realTime Upvote.
 
   2. Hide functionality is correctly implemented.
 

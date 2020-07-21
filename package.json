@@ -10,7 +10,8 @@
     "prod": "npm run webpackprod && babel-node src/server.js",
     "build": "npm run webpackprod && babel-node src/server.js",
     "start": "npm run webpackprod && babel-node src/server.js",
-    "lint": "eslint src/**/*.js src/**/*.jsx"
+    "lint": "eslint src/**/*.js src/**/*.jsx",
+    "nRun": "nodemon start"
   },
   "keywords": [],
   "author": "",
