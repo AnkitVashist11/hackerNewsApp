@@ -70,12 +70,14 @@ class Index extends React.Component {
   }
 
   DataHandler(pageNumber) {
+    if (localStorage.getItem(pageNumber) === null) {
     let url = `https://hn.algolia.com/api/v1/search?page=${pageNumber}`;
     axios
       .get(url, {
         responseType: "json"
       })
       .then(response => {
+        
         this.setState({
           tableData: response.data.hits,
           pageNo: pageNumber,
@@ -85,6 +87,15 @@ class Index extends React.Component {
         console.log("res: ", this.state.tableData);
         console.log("res of completeData ", this.state.completeData);
       });
+    }
+    else{
+      console.log('data already fetched from api');
+      console.log()
+      this.setState({
+        pageNo:pageNumber,
+        tableData:JSON.parse(localStorage.getItem(pageNumber)),
+      });
+    }
   }
 
 /*   hideHandler = () => {
@@ -119,6 +130,17 @@ class Index extends React.Component {
     })
 }
 
+SaveDataToLocalStorageUpvote=(data)=>
+{
+  let pageNumber=this.state.pageNo;
+    console.log("inside localstorage upvote",data)
+    localStorage.setItem(pageNumber,JSON.stringify(data));
+     this.setState({
+      tableData:JSON.parse(localStorage.getItem(pageNumber)) || [],
+    })
+}
+
+
 RemoveDataFromLocalStorage=(dataval)=>
 {
  console.log("inside RemoveDataFromLocalStorage")
@@ -138,15 +160,21 @@ RemoveDataFromLocalStorage=(dataval)=>
       Hiddenrow:JSON.parse(localStorage.getItem('session')) || [],
     })
 }
+
  //onClick={this.hideHandler(index)}
  updateUpVote=(index) => {
    console.log('index of upvote: & news points ',index);
    console.log('tableData ',this.state.tableData);
    let newValue = JSON.parse(JSON.stringify(this.state.tableData))
     newValue[index].points += 1;
-   this.setState({
+   
+    console.log('new value before local storage',newValue);
+    this.SaveDataToLocalStorageUpvote(newValue);
+    //console.log("updated state",localStorage.getItem('upvote')); 
+  /*  this.setState({
      tableData : newValue
-   })   
+   })  */
+   //this.SaveDataToLocalStorageUpvote(this.state.tableData);  
    }
    
 
@@ -177,7 +205,7 @@ showHandlerNew=(indexval)=> {
         <td>{news.num_comments?news.num_comments:'0'}</td>
         <td>{news.points}</td>
         <td>
-          <a onClick = {()=>this.updateUpVote(index)} style={styles.UpvoteButton} href='#' >{<TiArrowSortedUp style={styles.UpvoteButton}/>/* <Button variant="primary btn-sm" style={styles.UpvoteButton}><TiArrowSortedUp/></Button> {" "} */}</a>
+          <a onClick = {()=>this.updateUpVote(index)} style={styles.UpvoteButton}>{<TiArrowSortedUp style={styles.UpvoteButton}/>/* <Button variant="primary btn-sm" style={styles.UpvoteButton}><TiArrowSortedUp/></Button> {" "} */}</a>
         </td>
         <td>
           {news.title}{" "}
@@ -206,6 +234,7 @@ showHandlerNew=(indexval)=> {
 
   render() {
     const data = this.state.tableData;
+    console.log(data);
     return (
       <div>
         <link
@@ -227,7 +256,7 @@ showHandlerNew=(indexval)=> {
                 <tr style={styles.TableRow}>
                   <th>Comments</th>
                   <th>VoteCount</th>
-                  <th>UpVoteing</th>
+                  <th>UpVote</th>
                   <th>News Details</th>
                 </tr>
               </thead>
